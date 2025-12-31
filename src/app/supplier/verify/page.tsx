@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import Link from "next/link";
 
@@ -11,6 +11,16 @@ export default function SupplierVerification() {
     const [step, setStep] = useState(0); // 0: Start, 1: Business, 2: Identity, 3: Physical, 4: Success
     const [verificationType, setVerificationType] = useState<"standard" | "gold">("gold");
     const [submitting, setSubmitting] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 900);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     // Form and file states
     const [files, setFiles] = useState<{ [key: string]: File | null }>({});
@@ -49,7 +59,7 @@ export default function SupplierVerification() {
             <Header />
 
             <main className="container py-8 flex justify-center">
-                <div style={{ maxWidth: "1200px", width: "100%", display: "flex", gap: "3rem", flexDirection: window.innerWidth < 900 ? "column" : "row" }}>
+                <div style={{ maxWidth: "1200px", width: "100%", display: "flex", gap: "3rem", flexDirection: isMobile ? "column" : "row" }}>
 
                     {/* Left Progress Sidebar (Desktop Only) */}
                     {step < 4 && (
