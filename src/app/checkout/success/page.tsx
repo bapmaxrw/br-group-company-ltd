@@ -44,7 +44,7 @@ export default function CheckoutSuccess() {
                         {/* Highlighting Country Code as requested */}
                         <div className="flex justify-between mb-3">
                             <span style={{ color: "var(--text-light)" }}>Recipient Country Code:</span>
-                            <span style={{ fontWeight: "800", color: "var(--primary-color)", fontSize: "1.2rem", background: "rgba(255,106,0,0.05)", padding: "2px 8px", borderRadius: "4px" }}>
+                            <span style={{ fontWeight: "800", color: "var(--primary-color)", fontSize: "1.2rem", background: "rgba(230, 30, 42, 0.05)", padding: "2px 8px", borderRadius: "4px" }}>
                                 {product.sellerPhone.split(' ')[0]}
                             </span>
                         </div>

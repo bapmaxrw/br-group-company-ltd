@@ -20,7 +20,7 @@ export default function Home() {
           <div className="container" style={{ position: "relative", zIndex: 10 }}>
             <div className="hero-content animate-up">
               <span style={{
-                background: "rgba(255,106,0,0.2)",
+                background: "rgba(230,30,42,0.2)",
                 color: "var(--primary-color)",
                 padding: "6px 16px",
                 borderRadius: "100px",

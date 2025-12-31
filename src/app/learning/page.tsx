@@ -26,7 +26,7 @@ const paths = [
         desc: "Master global RFQs and optimize your factory profile for maximum visibility.",
         lessons: 12,
         time: " business days",
-        color: "#FF851B"
+        color: "#E61E2A"
     },
     {
         title: "Logistics Expert",
@@ -147,7 +147,7 @@ export default function LearningCenter() {
                                         { title: "Smart Contracts for B2B Payments", date: "Jan 20, 11:30 AM", speaker: "Tech Team Hub" },
                                     ].map((event, i) => (
                                         <div key={i} style={{ display: "flex", gap: "1.5rem", background: "white", padding: "1.5rem", borderRadius: "20px", border: "1px solid var(--border-color)", transition: "all 0.2s" }} className="event-card">
-                                            <div style={{ width: "60px", height: "60px", background: "rgba(255,106,0,0.1)", borderRadius: "15px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>📅</div>
+                                            <div style={{ width: "60px", height: "60px", background: "rgba(230, 30, 42, 0.1)", borderRadius: "15px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>📅</div>
                                             <div>
                                                 <h4 style={{ fontSize: "1.1rem", marginBottom: "0.25rem" }}>{event.title}</h4>
                                                 <p style={{ fontSize: "0.85rem", color: "var(--text-light)" }}>{event.date} • {event.speaker}</p>
@@ -195,7 +195,7 @@ export default function LearningCenter() {
                 .cat-card:hover {
                     transform: translateY(-5px);
                     border-color: var(--primary-color);
-                    box-shadow: 0 15px 35px rgba(255,106,0,0.1);
+                    box-shadow: 0 15px 35px rgba(230, 30, 42, 0.1);
                 }
                 .event-card:hover {
                     border-color: var(--primary-color);

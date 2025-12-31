@@ -115,7 +115,7 @@ export default function SupplierVerification() {
                                             padding: "2.5rem",
                                             borderRadius: "24px",
                                             border: `2px solid ${verificationType === "standard" ? "var(--primary-color)" : "var(--border-color)"}`,
-                                            background: verificationType === "standard" ? "rgba(255,106,0,0.02)" : "transparent",
+                                            background: verificationType === "standard" ? "rgba(230, 30, 42, 0.02)" : "transparent",
                                             cursor: "pointer"
                                         }}
                                     >
@@ -227,7 +227,7 @@ export default function SupplierVerification() {
                                         />
                                     </div>
 
-                                    <div className="flex items-center gap-3" style={{ background: "rgba(255,106,0,0.05)", padding: "1.5rem", borderRadius: "16px" }}>
+                                    <div className="flex items-center gap-3" style={{ background: "rgba(230, 30, 42, 0.05)", padding: "1.5rem", borderRadius: "16px" }}>
                                         <span style={{ fontSize: "1.5rem" }}>🤳</span>
                                         <p style={{ fontSize: "0.85rem", color: "var(--text-main)" }}>
                                             <strong>Note:</strong> After submission, you will receive a secure SMS link to perform a 3D Liveness Selfie check.

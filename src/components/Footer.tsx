@@ -10,7 +10,7 @@ export default function Footer() {
     return (
         <footer className="footer" style={{ background: "var(--footer-bg)", color: "var(--footer-text)", paddingTop: "6rem", borderTop: "1px solid rgba(255,255,255,0.05)", position: "relative", zIndex: 10 }}>
             {/* Background Accent */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "100%", background: "radial-gradient(circle at 90% 90%, rgba(255,106,0,0.03) 0%, transparent 40%)", pointerEvents: "none" }}></div>
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "100%", background: "radial-gradient(circle at 90% 90%, rgba(230, 30, 42, 0.03) 0%, transparent 40%)", pointerEvents: "none" }}></div>
 
             <div className="container" style={{ position: "relative", zIndex: 1 }}>
                 {/* Top Section: CTA & Brand */}
@@ -58,7 +58,7 @@ export default function Footer() {
                     </div>
 
                     <div style={{ flex: "1", minWidth: "320px" }}>
-                        <div style={{ background: "linear-gradient(135deg, rgba(255,106,0,0.1) 0%, rgba(255,255,255,0.02) 100%)", padding: "3rem", borderRadius: "var(--radius-lg)", border: "1px solid rgba(255,106,0,0.2)" }}>
+                        <div style={{ background: "linear-gradient(135deg, rgba(230, 30, 42, 0.1) 0%, rgba(255,255,255,0.02) 100%)", padding: "3rem", borderRadius: "var(--radius-lg)", border: "1px solid rgba(230, 30, 42, 0.2)" }}>
                             <h4 style={{ color: "white", fontSize: "1.25rem", marginBottom: "0.75rem", fontWeight: "800" }}>Global Trade Insights</h4>
                             <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "2rem", lineHeight: "1.6" }}>Get exclusive market reports, shipping index updates, and regulatory news.</p>
                             <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">

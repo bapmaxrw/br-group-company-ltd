@@ -68,7 +68,7 @@ export default function Settings() {
                                         ))}
                                     </select>
                                 </div>
-                                <div style={{ borderTop: "1px solid var(--border-color)", pt: "1rem" }}>
+                                <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "1rem" }}>
                                     <p style={{ fontSize: "0.80rem", color: "var(--text-light)", marginTop: "1rem" }}>Managing your global trade preferences helps us provide better recommendations for shipping and customs.</p>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@ export default function Settings() {
                                             padding: "0.85rem 1rem",
                                             borderRadius: "10px",
                                             border: `1px solid ${language === lang.code ? "var(--primary-color)" : "var(--border-color)"}`,
-                                            background: language === lang.code ? "rgba(255,106,0,0.05)" : "transparent",
+                                            background: language === lang.code ? "rgba(230, 30, 42, 0.05)" : "transparent",
                                             cursor: "pointer",
                                             display: "flex",
                                             justifyContent: "space-between",

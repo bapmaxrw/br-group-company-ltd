@@ -46,7 +46,7 @@ export default function Products() {
                                             padding: "0.75rem 1rem",
                                             borderRadius: "12px",
                                             cursor: "pointer",
-                                            background: selectedCategory === cat ? "rgba(255,106,0,0.1)" : "transparent",
+                                            background: selectedCategory === cat ? "rgba(230, 30, 42, 0.1)" : "transparent",
                                             color: selectedCategory === cat ? "var(--primary-color)" : "var(--text-main)",
                                             fontWeight: selectedCategory === cat ? "700" : "500",
                                             transition: "all 0.2s ease"
@@ -159,7 +159,7 @@ export default function Products() {
                     border-color: var(--primary-color);
                 }
                 .filter-item:hover {
-                    background: rgba(255,106,0,0.05) !important;
+                    background: rgba(230, 30, 42, 0.05) !important;
                     padding-left: 1.5rem !important;
                 }
             `}</style>

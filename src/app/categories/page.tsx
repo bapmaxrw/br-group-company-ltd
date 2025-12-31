@@ -64,7 +64,7 @@ export default function Categories() {
                                     <div style={{ width: "60px", height: "60px", background: cat.color, borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>
                                         {cat.icon}
                                     </div>
-                                    <span style={{ fontSize: "0.8rem", fontWeight: "700", color: "var(--primary-color)", background: "rgba(255,106,0,0.05)", padding: "4px 12px", borderRadius: "12px" }}>
+                                    <span style={{ fontSize: "0.8rem", fontWeight: "700", color: "var(--primary-color)", background: "rgba(230, 30, 42, 0.05)", padding: "4px 12px", borderRadius: "12px" }}>
                                         12k+ Products
                                     </span>
                                 </div>

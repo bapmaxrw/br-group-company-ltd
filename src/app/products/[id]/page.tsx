@@ -98,7 +98,7 @@ export default function ProductDetail() {
                             </div>
 
                             {/* Direct Settlement Info */}
-                            <div style={{ background: "rgba(255,106,0,0.05)", padding: "2rem", borderRadius: "16px", border: "1px solid var(--primary-color)", marginBottom: "2rem" }}>
+                            <div style={{ background: "rgba(230, 30, 42, 0.05)", padding: "2rem", borderRadius: "16px", border: "1px solid var(--primary-color)", marginBottom: "2rem" }}>
                                 <div className="flex gap-2 items-center mb-4">
                                     <span style={{ fontSize: "1.5rem" }}>💳</span>
                                     <h3 style={{ fontSize: "1.1rem", margin: 0 }}>Verified Seller Settlement</h3>

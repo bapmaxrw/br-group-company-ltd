@@ -48,7 +48,7 @@ export default function BuyerDashboard() {
                                         textAlign: "left",
                                         padding: "0.85rem 1rem",
                                         borderRadius: "8px",
-                                        background: activeTab === item.id ? "rgba(255,106,0,0.1)" : "transparent",
+                                        background: activeTab === item.id ? "rgba(230, 30, 42, 0.1)" : "transparent",
                                         color: activeTab === item.id ? "var(--primary-color)" : "var(--text-main)",
                                         border: "none",
                                         cursor: "pointer",
@@ -89,7 +89,7 @@ export default function BuyerDashboard() {
                                                 padding: "0.25rem 0.75rem",
                                                 borderRadius: "20px",
                                                 fontSize: "0.85rem",
-                                                background: order.status === "Delivered" ? "rgba(46,125,50,0.1)" : "rgba(255,106,0,0.1)",
+                                                background: order.status === "Delivered" ? "rgba(46,125,50,0.1)" : "rgba(230, 30, 42, 0.1)",
                                                 color: order.status === "Delivered" ? "#2e7d32" : "var(--primary-color)",
                                                 marginBottom: "0.75rem",
                                                 display: "inline-block"

@@ -134,7 +134,7 @@ export default function RFQ() {
                                     <button type="button" className="btn" style={{ background: "white", border: "1px solid var(--border-color)", borderRadius: "12px", padding: "0.75rem 2rem" }}>Upload Assets</button>
                                 </div>
 
-                                <div className="flex items-center gap-4" style={{ background: "rgba(255,106,0,0.05)", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--primary-color)" }}>
+                                <div className="flex items-center gap-4" style={{ background: "rgba(230, 30, 42, 0.05)", padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--primary-color)" }}>
                                     <input
                                         type="checkbox"
                                         id="urgent"
@@ -145,7 +145,7 @@ export default function RFQ() {
                                     <label htmlFor="urgent" style={{ fontWeight: "800", cursor: "pointer", fontSize: "1.1rem", color: "var(--primary-color)" }}>URGENT: Expedite my request to Global Priority Hubs</label>
                                 </div>
 
-                                <button type="submit" disabled={submitting} className="btn btn-primary" style={{ padding: "1.75rem", fontSize: "1.3rem", fontWeight: "900", borderRadius: "20px", boxShadow: "0 20px 40px rgba(255,106,0,0.2)" }}>
+                                <button type="submit" disabled={submitting} className="btn btn-primary" style={{ padding: "1.75rem", fontSize: "1.3rem", fontWeight: "900", borderRadius: "20px", boxShadow: "0 20px 40px rgba(230, 30, 42, 0.2)" }}>
                                     {submitting ? "Broadcasting to Global Network..." : "Launch Sourcing Request"}
                                 </button>
                             </form>

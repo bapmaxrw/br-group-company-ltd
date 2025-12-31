@@ -66,7 +66,7 @@ export default function Checkout() {
                                             padding: "1.5rem",
                                             borderRadius: "12px",
                                             border: `2px solid ${paymentMethod === method.id ? "var(--primary-color)" : "var(--border-color)"}`,
-                                            background: paymentMethod === method.id ? "rgba(255,106,0,0.05)" : "transparent",
+                                            background: paymentMethod === method.id ? "rgba(230, 30, 42, 0.05)" : "transparent",
                                             textAlign: "center",
                                             cursor: "pointer",
                                             transition: "all 0.2s ease"
@@ -78,7 +78,7 @@ export default function Checkout() {
                                 ))}
                             </div>
 
-                            <div style={{ borderTop: "1px solid var(--border-color)", pt: "2rem", marginTop: "2rem" }}>
+                            <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "2rem", marginTop: "2rem" }}>
                                 <h2 style={{ marginBottom: "1.5rem", fontSize: "1.5rem" }}>2. Payment Recipient (Direct Settlement)</h2>
                                 <div style={{ background: "rgba(0,179,65,0.05)", padding: "1.5rem", borderRadius: "12px", border: "1px solid #00b341", marginBottom: "2rem" }}>
                                     <div className="flex justify-between items-center mb-4">
@@ -135,7 +135,7 @@ export default function Checkout() {
                                 onClick={handleConfirmPayment}
                                 disabled={isProcessing}
                                 className="btn btn-primary"
-                                style={{ width: "100%", padding: "1.5rem", fontSize: "1.2rem", fontWeight: "800", opacity: isProcessing ? 0.7 : 1, borderRadius: "12px", boxShadow: "0 10px 20px rgba(255,106,0,0.2)" }}
+                                style={{ width: "100%", padding: "1.5rem", fontSize: "1.2rem", fontWeight: "800", opacity: isProcessing ? 0.7 : 1, borderRadius: "12px", boxShadow: "0 10px 20px rgba(230, 30, 42, 0.2)" }}
                             >
                                 {isProcessing ? "Processing Secure Transfer..." : `Pay ${formatPrice(totalAmount)} Now`}
                             </button>

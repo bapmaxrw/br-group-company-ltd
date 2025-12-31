@@ -242,7 +242,7 @@ export default function SupplierDashboard() {
                             <div style={{ background: "white", padding: "3.5rem", borderRadius: "32px", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-premium)" }}>
                                 <div className="flex justify-between items-center mb-10">
                                     <h2 style={{ fontSize: "1.75rem", fontWeight: "900" }}>Market Opportunity Feed</h2>
-                                    <span style={{ background: "rgba(255,106,0,0.1)", color: "var(--primary-color)", padding: "6px 16px", borderRadius: "100px", fontSize: "0.85rem", fontWeight: "900" }}>{rfqs.length} REQUESTS LIVE</span>
+                                    <span style={{ background: "rgba(230, 30, 42, 0.1)", color: "var(--primary-color)", padding: "6px 16px", borderRadius: "100px", fontSize: "0.85rem", fontWeight: "900" }}>{rfqs.length} REQUESTS LIVE</span>
                                 </div>
 
                                 <div className="flex-col gap-6">
@@ -297,7 +297,7 @@ export default function SupplierDashboard() {
             <style jsx>{`
                 .animate-up { animation: fadeInUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1); }
                 @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-                .nav-btn:hover { background: rgba(255,106,0,0.05) !important; padding-left: 1.75rem !important; }
+                .nav-btn:hover { background: rgba(230, 30, 42, 0.05) !important; padding-left: 1.75rem !important; }
                 .table-row:hover { background: rgba(0,0,0,0.04) !important; }
                 .sku-card:hover { transform: translateY(-8px); border-color: var(--primary-color) !important; box-shadow: var(--shadow-premium); }
                 .rfq-row:hover { border-color: var(--primary-color) !important; transform: scale(1.005); }
