@@ -44,7 +44,7 @@ export default function Register() {
                     <div className="flex gap-4 mb-10">
                         <div
                             onClick={() => setRole("buyer")}
-                            style={{ flex: 1, padding: "1.5rem", borderRadius: "20px", border: `2px solid ${role === "buyer" ? "var(--primary-color)" : "var(--border-color)"}`, cursor: "pointer", background: role === "buyer" ? "rgba(255,106,0,0.05)" : "transparent", textAlign: "center", transition: "all 0.2s" }}
+                            style={{ flex: 1, padding: "1.5rem", borderRadius: "20px", border: `2px solid ${role === "buyer" ? "var(--primary-color)" : "var(--border-color)"}`, cursor: "pointer", background: role === "buyer" ? "rgba(230, 30, 42, 0.05)" : "transparent", textAlign: "center", transition: "all 0.2s" }}
                         >
                             <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.5rem" }}>🛒</span>
                             <span style={{ fontWeight: "800", display: "block" }}>I am a Buyer</span>
@@ -52,7 +52,7 @@ export default function Register() {
                         </div>
                         <div
                             onClick={() => setRole("supplier")}
-                            style={{ flex: 1, padding: "1.5rem", borderRadius: "20px", border: `2px solid ${role === "supplier" ? "var(--primary-color)" : "var(--border-color)"}`, cursor: "pointer", background: role === "supplier" ? "rgba(255,106,0,0.05)" : "transparent", textAlign: "center", transition: "all 0.2s" }}
+                            style={{ flex: 1, padding: "1.5rem", borderRadius: "20px", border: `2px solid ${role === "supplier" ? "var(--primary-color)" : "var(--border-color)"}`, cursor: "pointer", background: role === "supplier" ? "rgba(230, 30, 42, 0.05)" : "transparent", textAlign: "center", transition: "all 0.2s" }}
                         >
                             <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.5rem" }}>🏭</span>
                             <span style={{ fontWeight: "800", display: "block" }}>I am a supplier</span>

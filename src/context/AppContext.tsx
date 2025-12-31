@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type UserRole = "buyer" | "seller" | null;
+type UserRole = "buyer" | "seller" | "supplier" | null;
 
 interface User {
     id: string;
