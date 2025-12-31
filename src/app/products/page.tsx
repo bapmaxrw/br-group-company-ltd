@@ -7,7 +7,9 @@ import Link from "next/link";
 import { useApp } from "@/context/AppContext";
 import { useSearchParams } from "next/navigation";
 
-export default function Products() {
+import { Suspense } from "react";
+
+function ProductsContent() {
     const { products: allProducts, formatPrice, translations } = useApp();
     const searchParams = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -164,5 +166,13 @@ export default function Products() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function Products() {
+    return (
+        <Suspense fallback={<div>Loading marketplace...</div>}>
+            <ProductsContent />
+        </Suspense>
     );
 }

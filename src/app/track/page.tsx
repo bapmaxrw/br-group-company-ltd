@@ -6,7 +6,9 @@ import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Tracking() {
+import { Suspense } from "react";
+
+function TrackingContent() {
     const searchParams = useSearchParams();
     const [trackingId, setTrackingId] = useState(searchParams.get("id") || "");
     const [status, setStatus] = useState<any>(null);
@@ -211,6 +213,14 @@ export default function Tracking() {
                 .dispute-box:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(133,77,14,0.1); }
             `}</style>
         </div>
+    );
+}
+
+export default function Tracking() {
+    return (
+        <Suspense fallback={<div>Loading courier tracking...</div>}>
+            <TrackingContent />
+        </Suspense>
     );
 }
 

@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 
-export default function CheckoutSuccess() {
+import { Suspense } from "react";
+
+function CheckoutSuccessContent() {
     const { products, formatPrice } = useApp();
     const searchParams = useSearchParams();
 
@@ -81,5 +83,13 @@ export default function CheckoutSuccess() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function CheckoutSuccess() {
+    return (
+        <Suspense fallback={<div>Loading order confirmation...</div>}>
+            <CheckoutSuccessContent />
+        </Suspense>
     );
 }

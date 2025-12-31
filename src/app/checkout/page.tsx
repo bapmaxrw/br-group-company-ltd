@@ -6,7 +6,9 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 
-export default function Checkout() {
+import { Suspense } from "react";
+
+function CheckoutContent() {
     const { products, user, formatPrice } = useApp();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -197,5 +199,13 @@ export default function Checkout() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function Checkout() {
+    return (
+        <Suspense fallback={<div>Loading checkout...</div>}>
+            <CheckoutContent />
+        </Suspense>
     );
 }
