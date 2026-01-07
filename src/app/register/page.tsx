@@ -12,21 +12,39 @@ export default function Register() {
     const router = useRouter();
     const [role, setRole] = useState<"buyer" | "supplier">("buyer");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleRegister = (e: React.FormEvent) => {
+    const [formData, setFormData] = useState({
+        name: "",
+        company: "",
+        email: "",
+        password: ""
+    });
+
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
-            setUser({
-                id: "2",
-                name: "New Global Partner",
-                role: role,
-                email: "partner@global.com",
-                company: "Global Trade Co Solutions",
-                verificationStatus: "unverified"
+        setError("");
+
+        try {
+            const res = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...formData, role })
             });
-            router.push(role === "buyer" ? "/buyer/dashboard" : "/supplier/dashboard");
-        }, 1500);
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Registration failed");
+            }
+
+            // Redirect to login or auto-login
+            router.push("/login?registered=true");
+        } catch (err: any) {
+            setError(err.message);
+            setLoading(false);
+        }
     };
 
     return (
@@ -61,25 +79,58 @@ export default function Register() {
                     </div>
 
                     <form onSubmit={handleRegister} className="flex-col gap-6">
+                        {error && (
+                            <div style={{ padding: "1rem", borderRadius: "12px", background: "rgba(230, 30, 42, 0.1)", border: "1px solid var(--primary-color)", color: "var(--primary-color)", fontSize: "0.9rem", fontWeight: "600", marginBottom: "1rem", textAlign: "center" }}>
+                                {error}
+                            </div>
+                        )}
                         <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
                             <div className="flex-col gap-2">
                                 <label style={{ fontSize: "0.9rem", fontWeight: "700" }}>Legal Name</label>
-                                <input type="text" placeholder="John Carter" required style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }} />
+                                <input
+                                    type="text"
+                                    placeholder="John Carter"
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }}
+                                />
                             </div>
                             <div className="flex-col gap-2">
                                 <label style={{ fontSize: "0.9rem", fontWeight: "700" }}>Company Name</label>
-                                <input type="text" placeholder="Carter Imports" required style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }} />
+                                <input
+                                    type="text"
+                                    placeholder="Carter Imports"
+                                    required
+                                    value={formData.company}
+                                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                    style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }}
+                                />
                             </div>
                         </div>
 
                         <div className="flex-col gap-2">
                             <label style={{ fontSize: "0.9rem", fontWeight: "700" }}>Corporate Email</label>
-                            <input type="email" placeholder="email@company.com" required style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }} />
+                            <input
+                                type="email"
+                                placeholder="email@company.com"
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }}
+                            />
                         </div>
 
                         <div className="flex-col gap-2">
                             <label style={{ fontSize: "0.9rem", fontWeight: "700" }}>Secure Password</label>
-                            <input type="password" placeholder="••••••••" required style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }} />
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }}
+                            />
                         </div>
 
                         <div style={{ marginTop: "1rem" }}>

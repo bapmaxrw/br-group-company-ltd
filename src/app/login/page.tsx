@@ -5,28 +5,40 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
     const { setUser } = useApp();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleLogin = (e: React.FormEvent) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate auth
-        setTimeout(() => {
-            setUser({
-                id: "1",
-                name: "International Buyer",
-                role: "buyer",
-                email: "buyer@global.com",
-                company: "Carter Imports Ltd",
-                verificationStatus: "verified"
+        setError("");
+
+        try {
+            const result = await signIn("credentials", {
+                redirect: false,
+                email,
+                password,
             });
-            router.push("/buyer/dashboard");
-        }, 1500);
+
+            if (result?.error) {
+                setError(result.error);
+                setLoading(false);
+            } else {
+                router.push("/buyer/dashboard");
+            }
+        } catch (err) {
+            setError("Something went wrong. Please try again.");
+            setLoading(false);
+        }
     };
 
     return (
@@ -41,16 +53,35 @@ export default function Login() {
                     </div>
 
                     <form onSubmit={handleLogin} className="flex-col gap-6">
+                        {error && (
+                            <div style={{ padding: "1rem", borderRadius: "12px", background: "rgba(230, 30, 42, 0.1)", border: "1px solid var(--primary-color)", color: "var(--primary-color)", fontSize: "0.9rem", fontWeight: "600", marginBottom: "1rem", textAlign: "center" }}>
+                                {error}
+                            </div>
+                        )}
                         <div className="flex-col gap-2">
                             <label style={{ fontSize: "0.9rem", fontWeight: "700" }}>Corporate Email</label>
-                            <input type="email" placeholder="email@company.com" required style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }} />
+                            <input
+                                type="email"
+                                placeholder="email@company.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }}
+                            />
                         </div>
                         <div className="flex-col gap-2">
                             <div className="flex justify-between">
                                 <label style={{ fontSize: "0.9rem", fontWeight: "700" }}>Password</label>
                                 <a href="#" style={{ fontSize: "0.85rem", color: "var(--primary-color)", fontWeight: "700" }}>Forgot?</a>
                             </div>
-                            <input type="password" placeholder="••••••••" required style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }} />
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{ padding: "1.2rem", borderRadius: "12px", border: "1px solid var(--border-color)", background: "#f8f9fa", outline: "none" }}
+                            />
                         </div>
 
                         <button type="submit" disabled={loading} className="btn btn-primary" style={{ padding: "1.5rem", borderRadius: "14px", fontWeight: "900", fontSize: "1.1rem", marginTop: "1rem" }}>

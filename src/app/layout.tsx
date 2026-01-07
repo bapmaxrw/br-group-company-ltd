@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppProvider } from "@/context/AppContext";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "BR Group Company | Global Trade & Supply Solutions",
@@ -20,9 +20,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body>
-        <AppProvider>
+        <Providers>
           {children}
-        </AppProvider>
+        </Providers>
       </body>
     </html>
   );
