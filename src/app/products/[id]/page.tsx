@@ -7,17 +7,36 @@ import Link from "next/link";
 import { useApp } from "@/context/AppContext";
 import { useParams, useRouter } from "next/navigation";
 
+import { useEffect } from "react";
+
 export default function ProductDetail() {
-    const { products, user, formatPrice } = useApp();
+    const { user, formatPrice } = useApp();
     const params = useParams();
     const router = useRouter();
 
-    const product = products.find(p => p.id === Number(params.id)) || products[0];
+    const [product, setProduct] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [includeInspection, setIncludeInspection] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(product.image);
+    const [selectedImage, setSelectedImage] = useState("");
 
-    const inspectionFee = product.category === "Machinery" ? 250 : 50;
+    useEffect(() => {
+        const fetchProduct = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/products/${params.id}`);
+                const data = await res.json();
+                setProduct(data);
+                setSelectedImage(data.images?.[0] || data.image || "");
+            } catch (error) {
+                console.error("Failed to fetch product:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [params.id]);
 
     const handleImmediatePurchase = () => {
         if (!user) {
@@ -25,8 +44,32 @@ export default function ProductDetail() {
             router.push("/login");
             return;
         }
-        router.push(`/checkout?productId=${product.id}&qty=${quantity}&inspection=${includeInspection}`);
+        router.push(`/checkout?productId=${product._id}&qty=${quantity}&inspection=${includeInspection}`);
     };
+
+    if (loading) return (
+        <div className="page" style={{ background: "var(--background-color)", minHeight: "100vh" }}>
+            <Header />
+            <main className="container py-20 text-center">
+                <div className="spinner" style={{ border: "4px solid rgba(0,0,0,0.1)", borderTop: "4px solid var(--primary-color)", borderRadius: "50%", width: "40px", height: "40px", animation: "spin 1s linear infinite", margin: "0 auto 1rem" }}></div>
+                <p>Establishing secure connection to catalog...</p>
+            </main>
+        </div>
+    );
+
+    if (!product) return (
+        <div className="page" style={{ background: "var(--background-color)", minHeight: "100vh" }}>
+            <Header />
+            <main className="container py-20 text-center">
+                <h2>Product Not Found</h2>
+                <Link href="/products" className="btn btn-primary" style={{ marginTop: "1rem" }}>Back to Marketplace</Link>
+            </main>
+        </div>
+    );
+
+    const inspectionFee = product.category === "Machinery" ? 250 : 50;
+    const supplierName = product.supplier?.company || product.supplier?.name || "Verified Supplier";
+
 
     const isEmoji = (str: string) => str && str.length <= 4 && /\p{Extended_Pictographic}/u.test(str);
 
@@ -55,7 +98,7 @@ export default function ProductDetail() {
                             {/* Thumbnails */}
                             {product.images && product.images.length > 1 && (
                                 <div className="flex gap-3 justify-center">
-                                    {product.images.map((img, i) => (
+                                    {product.images.map((img: any, i: number) => (
                                         <div
                                             key={i}
                                             onClick={() => setSelectedImage(img)}
@@ -105,16 +148,12 @@ export default function ProductDetail() {
                                 </div>
                                 <div className="flex-col gap-4">
                                     <div className="flex justify-between items-center" style={{ background: "white", padding: "10px 15px", borderRadius: "8px" }}>
-                                        <p style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--text-light)", margin: 0 }}>Country Code</p>
-                                        <p style={{ fontWeight: "800", color: "var(--primary-color)", margin: 0, fontSize: "1.1rem" }}>{product.sellerPhone.split(' ')[0]}</p>
-                                    </div>
-                                    <div className="flex justify-between items-center" style={{ background: "white", padding: "10px 15px", borderRadius: "8px" }}>
-                                        <p style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--text-light)", margin: 0 }}>MoMo Number</p>
-                                        <p style={{ fontWeight: "800", margin: 0, fontSize: "1.1rem" }}>{product.sellerPhone.split(' ').slice(1).join(' ')}</p>
+                                        <p style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--text-light)", margin: 0 }}>Contact Registry</p>
+                                        <p style={{ fontWeight: "800", color: "var(--primary-color)", margin: 0, fontSize: "1.1rem" }}>{product.supplier?.phone || "Pending Verification"}</p>
                                     </div>
                                     <div style={{ background: "rgba(0,0,0,0.03)", padding: "15px", borderRadius: "8px" }}>
-                                        <p style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--text-light)", marginBottom: "5px" }}>Bank / IBAN</p>
-                                        <p style={{ fontWeight: "600", margin: 0, fontSize: "0.95rem" }}>{product.sellerBank}</p>
+                                        <p style={{ fontWeight: "700", fontSize: "0.85rem", color: "var(--text-light)", marginBottom: "5px" }}>Bank / IBAN Registry</p>
+                                        <p style={{ fontWeight: "600", margin: 0, fontSize: "0.95rem" }}>{product.supplier?.bankInfo || "Available upon request"}</p>
                                     </div>
                                 </div>
                             </div>
@@ -188,8 +227,8 @@ export default function ProductDetail() {
                             <div className="flex gap-4 items-center">
                                 <div style={{ width: "50px", height: "50px", background: "rgba(0,0,0,0.05)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🏢</div>
                                 <div>
-                                    <Link href={`/supplier/${product.sellerId}`} style={{ fontWeight: "700", fontSize: "1.2rem", color: "inherit", textDecoration: "none" }}>{product.sellerName}</Link>
-                                    <p style={{ color: "var(--text-light)", fontSize: "0.85rem" }}>Global Exporter • {product.location.split(',')[1]?.trim() || "Verified Region"}</p>
+                                    <Link href={`/supplier/${product.supplier?._id || product.supplier?.id}`} style={{ fontWeight: "700", fontSize: "1.2rem", color: "inherit", textDecoration: "none" }}>{supplierName}</Link>
+                                    <p style={{ color: "var(--text-light)", fontSize: "0.85rem" }}>Global Exporter • {product.location || "Verified Region"}</p>
                                 </div>
                             </div>
                         </div>

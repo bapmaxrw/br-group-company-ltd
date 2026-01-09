@@ -9,34 +9,64 @@ import { useApp } from "@/context/AppContext";
 import { Suspense } from "react";
 
 function CheckoutContent() {
-    const { products, user, formatPrice } = useApp();
+    const { user, formatPrice } = useApp();
     const searchParams = useSearchParams();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("card");
+    const [product, setProduct] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
 
     const productId = searchParams.get("productId");
     const qty = Number(searchParams.get("qty") || 1);
     const hasInspection = searchParams.get("inspection") === "true";
 
-    const product = products.find(p => p.id === Number(productId)) || products[0];
-    const inspectionFee = product.category === "Machinery" ? 250 : 50;
-    const totalAmount = (product.price * qty) + (hasInspection ? inspectionFee : 0);
-
     useEffect(() => {
         if (!user) {
             alert("Please login to proceed to checkout");
             router.push("/login");
+            return;
         }
-    }, [user, router]);
+
+        const fetchProduct = async () => {
+            if (!productId) return;
+            try {
+                const res = await fetch(`/api/products/${productId}`);
+                const data = await res.json();
+                setProduct(data);
+            } catch (error) {
+                console.error("Checkout fetch failed:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [user, router, productId]);
+
+    if (loading || !product) {
+        return (
+            <div className="page" style={{ background: "var(--background-color)", minHeight: "100vh" }}>
+                <Header />
+                <main className="container py-20 text-center">
+                    <div className="spinner" style={{ border: "4px solid rgba(0,0,0,0.1)", borderTop: "4px solid var(--primary-color)", borderRadius: "50%", width: "40px", height: "40px", animation: "spin 1s linear infinite", margin: "0 auto 1rem" }}></div>
+                    <p>Fetching transaction details...</p>
+                </main>
+            </div>
+        );
+    }
+
+    const inspectionFee = product.category === "Machinery" ? 250 : 50;
+    const totalAmount = (product.price * qty) + (hasInspection ? inspectionFee : 0);
+    const supplierName = product.supplier?.company || product.supplier?.name || "Verified Supplier";
 
     const handleConfirmPayment = () => {
         setIsProcessing(true);
         // Simulate automatic payment logic
         setTimeout(() => {
             setIsProcessing(false);
-            alert(`Payment of ${formatPrice(totalAmount)} using ${paymentMethod} has been sent successfully to ${product.sellerName}!`);
-            router.push(`/checkout/success?productId=${product.id}&qty=${qty}&inspection=${hasInspection}`);
+            alert(`Payment of ${formatPrice(totalAmount)} using ${paymentMethod} has been sent successfully to ${supplierName}!`);
+            router.push(`/checkout/success?productId=${product._id}&qty=${qty}&inspection=${hasInspection}`);
         }, 2000);
     };
 
@@ -89,20 +119,16 @@ function CheckoutContent() {
                                     </div>
                                     <div className="flex-col gap-3">
                                         <div className="flex justify-between">
-                                            <span style={{ color: "var(--text-light)" }}>Recipient:</span>
-                                            <span style={{ fontWeight: "700" }}>{product.sellerName}</span>
+                                            <span style={{ color: "var(--text-light)" }}>Recipient Business:</span>
+                                            <span style={{ fontWeight: "700" }}>{supplierName}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span style={{ color: "var(--text-light)" }}>Region Code:</span>
-                                            <span style={{ fontWeight: "700", color: "var(--primary-color)" }}>{product.sellerPhone.split(' ')[0]}</span>
+                                            <span style={{ color: "var(--text-light)" }}>Contact Registry:</span>
+                                            <span style={{ fontWeight: "700", color: "var(--primary-color)" }}>{product.supplier?.phone || "Verified"}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span style={{ color: "var(--text-light)" }}>MoMo / Phone:</span>
-                                            <span style={{ fontWeight: "700" }}>{product.sellerPhone.split(' ').slice(1).join(' ')}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span style={{ color: "var(--text-light)" }}>Bank / IBAN:</span>
-                                            <span style={{ fontWeight: "700", textAlign: "right" }}>{product.sellerBank}</span>
+                                            <span style={{ color: "var(--text-light)" }}>Bank / IBAN Info:</span>
+                                            <span style={{ fontWeight: "700", textAlign: "right" }}>{product.supplier?.bankInfo || "Registry: BR-GROUP-ESCROW"}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +178,7 @@ function CheckoutContent() {
                             <h2 style={{ fontSize: "1.25rem", marginBottom: "1.5rem" }}>Shipment Summary</h2>
                             <div className="flex gap-4 mb-4">
                                 <div style={{ width: "80px", height: "80px", background: "rgba(0,0,0,0.05)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                                    {isEmoji(product.image) ? <span style={{ fontSize: "3rem" }}>{product.image}</span> : <img src={product.image} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                                    {isEmoji(product.images?.[0] || product.image) ? <span style={{ fontSize: "3rem" }}>{product.images?.[0] || product.image}</span> : <img src={product.images?.[0] || product.image} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <p style={{ fontWeight: "700", fontSize: "1rem", margin: 0 }}>{product.name}</p>

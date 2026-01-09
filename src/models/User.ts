@@ -24,6 +24,12 @@ const UserSchema = new mongoose.Schema({
     company: {
         type: String,
     },
+    phone: {
+        type: String,
+    },
+    bankInfo: {
+        type: String,
+    },
     verificationStatus: {
         type: String,
         enum: ['unverified', 'pending', 'verified'],

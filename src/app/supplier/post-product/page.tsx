@@ -6,8 +6,11 @@ import Footer from "@/components/Footer";
 import { useApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 export default function PostProduct() {
-    const { addProduct, user } = useApp();
+    const { addProduct } = useApp();
+    const { data: session } = useSession();
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -17,12 +20,14 @@ export default function PostProduct() {
         category: "Machinery",
         description: "",
         location: "",
-        phone: user?.phone || "",
-        bank: user?.bankInfo || ""
+        moq: "1",
+        phone: "",
+        bank: "",
     });
 
     const [images, setImages] = useState<string[]>([]);
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -39,32 +44,42 @@ export default function PostProduct() {
 
     const triggerUpload = () => fileInputRef.current?.click();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user) return alert("Please log in as a supplier first.");
+        if (!session) return alert("Please log in as a supplier first.");
         if (images.length === 0) return alert("Please upload at least one clear photo of the product.");
 
         setSubmitting(true);
+        setError("");
 
-        const newProduct = {
-            id: Date.now(),
+        const productData = {
             name: formData.name,
+            description: formData.description,
             price: parseFloat(formData.price),
             category: formData.category,
-            image: images[0],
             images: images,
-            location: formData.location,
-            sellerId: user.id,
-            sellerName: user.name,
-            sellerPhone: formData.phone,
-            sellerBank: formData.bank
+            moq: parseInt(formData.moq) || 1,
+            location: formData.location, // Note: we'll use this for the display but the model might need update if we want to save it permanently
         };
 
-        // Simulate global distribution sync
-        setTimeout(() => {
-            addProduct(newProduct);
+        try {
+            const res = await fetch("/api/products", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(productData)
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.message || "Failed to post product");
+            }
+
+            // Optional: refresh global state if needed, but the /products page should fetch from DB now
             router.push("/products");
-        }, 1500);
+        } catch (err: any) {
+            setError(err.message);
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -81,11 +96,16 @@ export default function PostProduct() {
                         </div>
                         <div style={{ textAlign: "right" }}>
                             <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--text-light)", marginBottom: "4px" }}>LOGGED IN AS</div>
-                            <div style={{ fontWeight: "900", fontSize: "1rem" }}>{user?.company || "Guest Supplier"}</div>
+                            <div style={{ fontWeight: "900", fontSize: "1rem" }}>{(session?.user as any)?.company || "Verified Supplier"}</div>
                         </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="flex-col gap-10">
+                        {error && (
+                            <div style={{ padding: "1rem", borderRadius: "12px", background: "rgba(230, 30, 42, 0.1)", border: "1px solid var(--primary-color)", color: "var(--primary-color)", fontSize: "0.9rem", fontWeight: "600", marginBottom: "1rem", textAlign: "center" }}>
+                                {error}
+                            </div>
+                        )}
                         {/* Immersive Media Manager */}
                         <div style={{ background: "#f8f9fa", padding: "3.5rem", borderRadius: "24px", border: "1px solid var(--border-color)", textAlign: "center" }}>
                             <div style={{ marginBottom: "2rem" }}>

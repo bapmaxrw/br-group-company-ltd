@@ -22,13 +22,22 @@ export async function GET(req: Request) {
     }
 }
 
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
+
 export async function POST(req: Request) {
     try {
+        const session = await getServerSession(authOptions as any) as any;
+
+        if (!session || session.user?.role !== 'supplier') {
+            return NextResponse.json({ message: "Unauthorized. Supplier access required." }, { status: 401 });
+        }
+
         await dbConnect();
         const data = await req.json();
 
-        // In a real app, we'd get the supplier ID from the session
-        // For now, we take it from the body but this should be secured
+        // Assign supplier from session for security
+        data.supplier = (session.user as any).id;
 
         const product = await Product.create(data);
 

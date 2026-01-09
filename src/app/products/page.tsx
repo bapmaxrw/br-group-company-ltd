@@ -10,10 +10,12 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 function ProductsContent() {
-    const { products: allProducts, formatPrice, translations } = useApp();
+    const { formatPrice, translations } = useApp();
     const searchParams = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
+    const [products, setProducts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const category = searchParams.get("category");
@@ -22,12 +24,28 @@ function ProductsContent() {
         if (query) setSearchQuery(query.toLowerCase());
     }, [searchParams]);
 
-    const filteredProducts = allProducts.filter(p => {
-        const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-        const matchesSearch = p.name.toLowerCase().includes(searchQuery) ||
-            p.category.toLowerCase().includes(searchQuery);
-        return matchesCategory && matchesSearch;
-    });
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            try {
+                const url = new URL("/api/products", window.location.origin);
+                if (selectedCategory !== "All") url.searchParams.set("category", selectedCategory);
+                if (searchQuery) url.searchParams.set("query", searchQuery);
+
+                const res = await fetch(url.toString());
+                const data = await res.json();
+                setProducts(data);
+            } catch (error) {
+                console.error("Failed to fetch products:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [selectedCategory, searchQuery]);
+
+    const filteredProducts = products; // Already filtered by API
 
     return (
         <div className="page" style={{ background: "var(--background-color)", minHeight: "100vh", color: "var(--text-main)" }}>
@@ -97,48 +115,58 @@ function ProductsContent() {
                             </div>
                         </div>
 
-                        {filteredProducts.length > 0 ? (
+                        {loading ? (
+                            <div style={{ textAlign: "center", padding: "8rem" }}>
+                                <div className="spinner" style={{ border: "4px solid rgba(0,0,0,0.1)", borderTop: "4px solid var(--primary-color)", borderRadius: "50%", width: "40px", height: "40px", animation: "spin 1s linear infinite", margin: "0 auto 1rem" }}></div>
+                                <p style={{ color: "var(--text-light)", fontWeight: "600" }}>Querying global catalog...</p>
+                            </div>
+                        ) : filteredProducts.length > 0 ? (
                             <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "2.5rem" }}>
-                                {filteredProducts.map(product => (
-                                    <div key={product.id} className="product-card-premium" style={{ background: "var(--surface-color)", borderRadius: "24px", overflow: "hidden", border: "1px solid var(--border-color)", transition: "all 0.3s ease" }}>
-                                        <div style={{ background: "#f8f9fa", height: "260px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-                                            <div style={{ position: "absolute", top: "15px", left: "15px", background: "white", padding: "6px 12px", borderRadius: "100px", fontSize: "0.7rem", fontWeight: "800", color: "#00b341", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", zIndex: 5 }}>
-                                                🛡️ TRADE ASSURED
-                                            </div>
-                                            {product.image && (product.image.length <= 4 && /\p{Extended_Pictographic}/u.test(product.image)) ? (
-                                                <span style={{ fontSize: "6rem" }}>{product.image}</span>
-                                            ) : (
-                                                <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                            )}
-                                            {product.location && (
-                                                <div style={{ position: "absolute", bottom: "15px", right: "15px", background: "rgba(0,0,0,0.7)", color: "white", padding: "4px 12px", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "600", backdropFilter: "blur(4px)" }}>
-                                                    📍 {product.location}
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div style={{ padding: "2rem" }}>
-                                            <div className="flex justify-between items-center mb-3">
-                                                <span style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--primary-color)" }}>{formatPrice(product.price)}</span>
-                                                <span style={{ fontSize: "0.8rem", color: "#ffc107" }}>★★★★★</span>
-                                            </div>
-                                            <Link href={`/products/${product.id}`} style={{ display: "-webkit-box", WebkitLineClamp: "2", WebkitBoxOrient: "vertical", fontSize: "1.15rem", fontWeight: "700", color: "var(--text-main)", height: "3rem", overflow: "hidden", marginBottom: "1.5rem", lineHeight: "1.3" }}>
-                                                {product.name}
-                                            </Link>
+                                {filteredProducts.map(product => {
+                                    const displayImage = product.images?.[0] || product.image;
+                                    const supplierName = product.supplier?.company || product.supplier?.name || "Verified Supplier";
 
-                                            <div style={{ marginBottom: "2rem", padding: "1rem", background: "rgba(0,0,0,0.02)", borderRadius: "12px" }}>
-                                                <div className="flex items-center gap-2">
-                                                    <span style={{ fontSize: "0.85rem", color: "var(--text-light)", fontWeight: "600" }}>{product.sellerName}</span>
-                                                    <span title="In-Person Verified" style={{ color: "#00b341", fontSize: "0.85rem" }}>✅</span>
+                                    return (
+                                        <div key={product._id} className="product-card-premium" style={{ background: "var(--surface-color)", borderRadius: "24px", overflow: "hidden", border: "1px solid var(--border-color)", transition: "all 0.3s ease" }}>
+                                            <div style={{ background: "#f8f9fa", height: "260px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+                                                <div style={{ position: "absolute", top: "15px", left: "15px", background: "white", padding: "6px 12px", borderRadius: "100px", fontSize: "0.7rem", fontWeight: "800", color: "#00b341", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", zIndex: 5 }}>
+                                                    🛡️ TRADE ASSURED
                                                 </div>
-                                                <p style={{ fontSize: "0.75rem", color: "var(--text-light)", marginTop: "4px" }}>Responds in &lt; 2h • 98% On-time</p>
+                                                {displayImage && (displayImage.length <= 4 && /\p{Extended_Pictographic}/u.test(displayImage)) ? (
+                                                    <span style={{ fontSize: "6rem" }}>{displayImage}</span>
+                                                ) : (
+                                                    <img src={displayImage} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                                )}
+                                                {product.location && (
+                                                    <div style={{ position: "absolute", bottom: "15px", right: "15px", background: "rgba(0,0,0,0.7)", color: "white", padding: "4px 12px", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "600", backdropFilter: "blur(4px)" }}>
+                                                        📍 {product.location}
+                                                    </div>
+                                                )}
                                             </div>
+                                            <div style={{ padding: "2rem" }}>
+                                                <div className="flex justify-between items-center mb-3">
+                                                    <span style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--primary-color)" }}>{formatPrice(product.price)}</span>
+                                                    <span style={{ fontSize: "0.8rem", color: "#ffc107" }}>★★★★★</span>
+                                                </div>
+                                                <Link href={`/products/${product._id}`} style={{ display: "-webkit-box", WebkitLineClamp: "2", WebkitBoxOrient: "vertical", fontSize: "1.15rem", fontWeight: "700", color: "var(--text-main)", height: "3rem", overflow: "hidden", marginBottom: "1.5rem", lineHeight: "1.3" }}>
+                                                    {product.name}
+                                                </Link>
 
-                                            <Link href={`/products/${product.id}`} className="btn btn-primary" style={{ width: "100%", padding: "1.1rem", borderRadius: "14px", fontWeight: "800" }}>
-                                                Source & Purchase
-                                            </Link>
+                                                <div style={{ marginBottom: "2rem", padding: "1rem", background: "rgba(0,0,0,0.02)", borderRadius: "12px" }}>
+                                                    <div className="flex items-center gap-2">
+                                                        <span style={{ fontSize: "0.85rem", color: "var(--text-light)", fontWeight: "600" }}>{supplierName}</span>
+                                                        <span title="In-Person Verified" style={{ color: "#00b341", fontSize: "0.85rem" }}>✅</span>
+                                                    </div>
+                                                    <p style={{ fontSize: "0.75rem", color: "var(--text-light)", marginTop: "4px" }}>Responds in &lt; 2h • 98% On-time</p>
+                                                </div>
+
+                                                <Link href={`/products/${product._id}`} className="btn btn-primary" style={{ width: "100%", padding: "1.1rem", borderRadius: "14px", fontWeight: "800" }}>
+                                                    Source & Purchase
+                                                </Link>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div style={{ textAlign: "center", padding: "8rem 2rem", background: "var(--surface-color)", borderRadius: "32px", border: "1px solid var(--border-color)", boxShadow: "var(--shadow-premium)" }}>
